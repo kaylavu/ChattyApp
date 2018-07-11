@@ -10,22 +10,23 @@ class ChatBar extends Component {
             username: this.props.currentUser
         }
     
-        this.onChange = this.onChange.bind(this)
-        this.onKeyUp = this.onKeyUp.bind(this)
+        this.onChangeContent = this.onChangeContent.bind(this)
+        this.onEnterContent = this.onEnterContent.bind(this)
     
         
     }
 
-  
+    
+    
 
-    onKeyUp(event) {
+    onEnterContent(event) {
         if (event.keyCode == 13) {
         this.props.onNewMessage(this.state.content); 
         this.setState({content: ''})
         }
     }
 
-    onChange(event) {
+    onChangeContent(event) {
         this.setState({content: event.target.value})
     }
 
@@ -35,7 +36,7 @@ class ChatBar extends Component {
         return(
             <footer className = "chatbar" >
                     <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.props.currentUser} />
-                    <input className="chatbar-message" placeholder="Type a message and hit ENTER" onChange={this.onChange} onKeyUp={this.onKeyUp} value={this.state.content}/>
+                    <input className="chatbar-message" placeholder="Type a message and hit ENTER" onChange={this.onChangeContent} onKeyUp={this.onEnterContent} value={this.state.content}/>
             </footer>
             )
 
