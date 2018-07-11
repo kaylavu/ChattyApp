@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MessageList from './MessageList.jsx'
 import ChatBar from './ChatBar.jsx'
 
+var ids =require('short-id')
 
 
 
@@ -25,6 +26,7 @@ class App extends Component {
       ]
     };
     this.onNewMessage = this.onNewMessage.bind(this)
+    this.onNewUsername = this.onNewUsername.bind(this)
 
   }
 
@@ -42,11 +44,15 @@ class App extends Component {
   }
 
   onNewMessage(content) {
-    const newMessage = {username: this.state.currentUser.name, content: content}
+    const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
     const messages = this.state.messages.concat(newMessage)
     this.setState({messages: messages})
   }
   
+  onNewUsername(name) {
+    console.log("new username to be implemented")
+    this.setState({currentUser: {name:name}})
+  }
 
   render() {
     return (
@@ -55,7 +61,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} />
+        <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} onNewUsername={this.onNewUsername}/>
       </div>
     );
   }
