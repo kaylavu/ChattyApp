@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import MessageList from './MessageList.jsx'
 import ChatBar from './ChatBar.jsx'
+import { testBasicHash } from 'sechash';
+const uuidv1 = require('uuid/v1')
 
-var ids =require('short-id')
+console.log(window); 
+
 
 
 
@@ -13,31 +16,36 @@ class App extends Component {
     this.state = {
       currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
-        {
-          id:1, 
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          id:2, 
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
       ]
     };
     this.onNewMessage = this.onNewMessage.bind(this)
     this.onNewUsername = this.onNewUsername.bind(this)
     this.socket = new WebSocket(`ws://localhost:3001`)
+    this.onMessage = this.onMessage.bind(this)
+
 
   }
 
-
+  onMessage(event) {                               
+    // console.log(event.data)
+    const newMessage = JSON.parse(event.data)
+    const messages = this.state.messages.concat(newMessage)
+    this.setState({messages: messages}) 
+  }
 
   componentDidMount() {
     this.socket.onopen = function (event) {
       console.log("Connected to Server!")
       //client.send("Here's some text that the server is urgently awai!"); 
     };
+    // this.socket.onmessage = (event) => {                                fixing the binding error using fat arrrow method 
+    //   // console.log(event.data)
+    //   const newMessage = JSON.parse(event.data)
+    //   const messages = this.state.messages.concat(newMessage)
+    //   this.setState({messages: messages}) 
+    // }
+     this.socket.onmessage = this.onMessage;            // Think: Why was it this.socket.onmessage = this.onMessage and NOT this.onMessage(); 
+
   }
 
 
@@ -45,7 +53,7 @@ class App extends Component {
     // const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
     // const messages = this.state.messages.concat(newMessage)
     // this.setState({messages: messages})
-    const newMessage = {username: this.state.currentUser.name, content: content}
+    const newMessage = {id:uuidv1(), username: this.state.currentUser.name, content: content}
     this.socket.send(JSON.stringify(newMessage))
     
   }
