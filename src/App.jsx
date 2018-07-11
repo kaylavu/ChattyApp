@@ -24,6 +24,8 @@ class App extends Component {
         }
       ]
     };
+    this.onNewMessage = this.onNewMessage.bind(this)
+
   }
 
   componentDidMount() {
@@ -39,6 +41,13 @@ class App extends Component {
     }, 3000);
   }
 
+  onNewMessage(content) {
+    const newMessage = {username: this.state.currentUser.name, content: content}
+    const messages = this.state.messages.concat(newMessage)
+    this.setState({messages: messages})
+  }
+  
+
   render() {
     return (
       <div>
@@ -46,7 +55,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser.name}/>
+        <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} />
       </div>
     );
   }
