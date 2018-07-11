@@ -13,7 +13,7 @@ export default function MessageList(props) {
         <main className="messages">
             {messages}
             <div className="message system">
-
+                Anonymous1 change their name to nomnom. 
             </div>
         </main>
     )

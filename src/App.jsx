@@ -53,7 +53,7 @@ class App extends Component {
     // const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
     // const messages = this.state.messages.concat(newMessage)
     // this.setState({messages: messages})
-    const newMessage = {id:uuidv1(), username: this.state.currentUser.name, content: content}
+    const newMessage = {type: "postMessage", username: this.state.currentUser.name, content: content}
     this.socket.send(JSON.stringify(newMessage))
     
   }
