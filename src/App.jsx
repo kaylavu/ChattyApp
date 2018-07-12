@@ -4,7 +4,7 @@ import ChatBar from './ChatBar.jsx'
 import { testBasicHash } from 'sechash';
 const uuidv1 = require('uuid/v1')
 
-console.log(window); 
+
 
 
 
@@ -26,11 +26,27 @@ class App extends Component {
 
   }
 
-  onMessage(event) {                               
-    // console.log(event.data)
+  onMessage(event) {
+    // console.log("HOW TO HANDLE THE MESSAGE:", event.data)
     const newMessage = JSON.parse(event.data)
     const messages = this.state.messages.concat(newMessage)
-    this.setState({messages: messages}) 
+    console.log(messages);
+    switch (newMessage.type) {
+      case "incomingMessage":
+      
+      this.setState({ messages: messages })
+        console.log("MESSAGE HANDLED BY USER", event.data)
+        break;
+      case "incomingNotification": 
+
+        this.setState({currentUser:{name:newMessage.newUsername}, messages: messages })
+        console.log("CURRENT USER", this.state.currentUser)
+        break; 
+      default:
+        throw new Error("Unknown Event Type"); 
+    }
+
+
   }
 
   componentDidMount() {
@@ -44,7 +60,7 @@ class App extends Component {
     //   const messages = this.state.messages.concat(newMessage)
     //   this.setState({messages: messages}) 
     // }
-     this.socket.onmessage = this.onMessage;            // Think: Why was it this.socket.onmessage = this.onMessage and NOT this.onMessage(); 
+    this.socket.onmessage = this.onMessage;            // Think: Why was it this.socket.onmessage = this.onMessage and NOT this.onMessage(); 
 
   }
 
@@ -53,14 +69,19 @@ class App extends Component {
     // const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
     // const messages = this.state.messages.concat(newMessage)
     // this.setState({messages: messages})
-    const newMessage = {type: "postMessage", username: this.state.currentUser.name, content: content}
+    const newMessage = { type: "postMessage", username: this.state.currentUser.name, content: content }
     this.socket.send(JSON.stringify(newMessage))
-    
+
   }
-  
+
   onNewUsername(name) {
-    console.log("new username to be implemented")
-    this.setState({currentUser: {name:name}})
+    //console.log("new username to be implemented")
+
+    let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name };
+    this.socket.send(JSON.stringify(newName))
+    // this.setState({currentUser: {name:name}})
+    // const newUsername = {type:"postNotification", } 
+    // this.socket.send(JSON.stringify(newUsername))
   }
 
   render() {
@@ -69,8 +90,8 @@ class App extends Component {
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
-        <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} onNewUsername={this.onNewUsername}/>
+        <MessageList messages={this.state.messages} />
+        <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} onNewUsername={this.onNewUsername} />
       </div>
     );
   }

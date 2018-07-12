@@ -38,8 +38,8 @@ class ChatBar extends Component {
 
     onEnterUsername(event) {
         if(event.keyCode == 13) {
-            this.props.onNewUsername(this.state.username);
-            console.log("MY NAME HAS CHANGED")
+            this.props.onNewUsername(event.target.value);  
+            //console.log("MY NAME HAS CHANGED")
         }
         
         
