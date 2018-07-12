@@ -21,16 +21,15 @@ class ChatBar extends Component {
     onChangeContent(event) {
         this.setState({content: event.target.value})
     }
-    
 
+    
     onEnterContent(event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode == 13 && this.state.content.length > 0) {
         this.props.onNewMessage(this.state.content); 
         this.setState({content: ''})
         }
     }
-
-
+    
     onChangeUsername(event) {
         //console.log("Hello changing username")
         this.setState({username: event.target.value})

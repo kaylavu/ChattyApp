@@ -14,7 +14,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      numOfConnectedUsers: 0, 
+      currentUser: { name: "Anonymous" }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
       ]
     };
@@ -27,23 +28,25 @@ class App extends Component {
   }
 
   onMessage(event) {
-    // console.log("HOW TO HANDLE THE MESSAGE:", event.data)
+    //console.log("EVENT FROM SERVER TO USER:", event.data)
     const newMessage = JSON.parse(event.data)
     const messages = this.state.messages.concat(newMessage)
-    console.log(messages);
+    // console.log(messages);
     switch (newMessage.type) {
       case "incomingMessage":
-      
-      this.setState({ messages: messages })
-        console.log("MESSAGE HANDLED BY USER", event.data)
+        this.setState({ messages: messages })
+        //console.log("INCOMING MESSAGE FROM SERVER:", event.data)
         break;
-      case "incomingNotification": 
-
-        this.setState({currentUser:{name:newMessage.newUsername}, messages: messages })
-        console.log("CURRENT USER", this.state.currentUser)
+      case "incomingNotification":
+        this.setState({ currentUser: { name: newMessage.newUsername }, messages: messages })
+        //console.log("CURRENT USER", this.state.currentUser)
+        break;
+      case "incomingUserCount": 
+        this.setState({numOfConnectedUsers: newMessage.numOfConnectedUsers})
+        console.log("SET APP STATE USER COUNT:", this.state.numOfConnectedUsers)
         break; 
       default:
-        throw new Error("Unknown Event Type"); 
+        throw new Error("Unknown Event Type");
     }
 
 
@@ -89,6 +92,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <span className="navbar-user-count"> {this.state.numOfConnectedUsers} Users Online</span>
         </nav>
         <MessageList messages={this.state.messages} />
         <ChatBar currentUser={this.state.currentUser.name} onNewMessage={this.onNewMessage} onNewUsername={this.onNewUsername} />
