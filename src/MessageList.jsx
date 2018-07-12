@@ -10,26 +10,27 @@ export default function MessageList(props) {
         switch(message.type) {
             case "incomingMessage":
                 return <Message key={message.id} userName={message.username} content={message.content} />
+            case "incomingNotification": 
+                return <div className="notification">
+                <span className="notification-content">{message.newUsername} changed their name</span>
+                </div>
         } 
      });
 
-     const notification = props.messages.map((message) => {
-       console.log("rohit ",message);
-        switch(message.type) {
-            case "incomingNotification": 
-                return (
-                   <div>
-                     <h1>This is only for test</h1>
-                    </div>
-                )
-            } 
-     });
+    //  const notification = props.messages.map((message) => {
+    //    console.log("rohit ",message);
+    //     switch(message.type) {
+    //         case "incomingNotification": 
+    //             return (
+    //                 <div className="notification">
+    //                 <span className="notification-content">Someone changed their name</span>
+    //                 </div>
+    //             )
+    //         } 
+    //  });
     return (
         <main className="messages">
             {messages}
-            <div className="notification">
-                {notification}
-            </div>
         </main>
     )
 }
