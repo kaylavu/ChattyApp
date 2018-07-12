@@ -38,8 +38,8 @@ class App extends Component {
         //console.log("INCOMING MESSAGE FROM SERVER:", event.data)
         break;
       case "incomingNotification":
-        this.setState({ currentUser: { name: newMessage.newUsername }, messages: messages })
-        //console.log("CURRENT USER", this.state.currentUser)
+        this.setState({ messages: messages })
+        console.log("CURRENT USER", this.state.currentUser)
         break;
       case "incomingUserCount": 
         this.setState({numOfConnectedUsers: newMessage.numOfConnectedUsers})
@@ -80,7 +80,9 @@ class App extends Component {
   onNewUsername(name) {
     //console.log("new username to be implemented")
 
-    let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name };
+    
+    let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name, content:`${this.state.currentUser.name} changed their name to ${name}` };
+    this.setState({ currentUser: { name: name }})
     this.socket.send(JSON.stringify(newName))
     // this.setState({currentUser: {name:name}})
     // const newUsername = {type:"postNotification", } 

@@ -12,7 +12,7 @@ export default function MessageList(props) {
                 return <Message key={message.id} userName={message.username} content={message.content} />
             case "incomingNotification": 
                 return <div className="notification" key={message.id}>
-                <span className="notification-content">{message.oldUsername} changed their name </span>
+                <span className="notification-content"> {message.content} </span>
                 </div>
         } 
      });
