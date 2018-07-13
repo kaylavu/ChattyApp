@@ -65,7 +65,7 @@ h1 {
     }
 
     .message-username {
-      flex: 2;
+      // flex: 2;
       font-weight: 700;
 
     }
@@ -79,6 +79,8 @@ h1 {
       position: fixed;
       right: 0;
       top: 0;
+      //added new html
+      z-index: 2; 
     }
 
     .navbar-brand {
@@ -95,6 +97,7 @@ h1 {
 
     .navbar-user-count {
       float: right; 
+      margin-top: 20px; 
     }
 
 
@@ -108,4 +111,27 @@ h1 {
       max-height: 20%; 
 
     }
+
+    .speech-bubble {
+      position: relative;
+      background: #fbfbfb;
+      border-radius: .4em;
+      //added new html
+      max-width: 70%;
+      padding: 5px 10px 5px;
+      margin-bottom: 5px; 
+    }
     
+    .speech-bubble:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      border-right-color: #fbfbfb;
+      border-left: 0;
+      margin-top: -5px;
+      margin-left: -5px;
+    }
