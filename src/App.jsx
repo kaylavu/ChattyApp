@@ -5,7 +5,14 @@ import { testBasicHash } from 'sechash';
 const uuidv1 = require('uuid/v1')
 
 
-
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 
 
 
@@ -15,7 +22,7 @@ class App extends Component {
     super(props);
     this.state = {
       numOfConnectedUsers: 0, 
-      currentUser: { name: "Anonymous" }, // optional. if currentUser is not defined, it means the user is Anonymous
+      currentUser: { name: "Anonymous", color: getRandomColor() }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
       ]
     };
@@ -23,7 +30,6 @@ class App extends Component {
     this.onNewUsername = this.onNewUsername.bind(this)
     this.socket = new WebSocket(`ws://localhost:3001`)
     this.onMessage = this.onMessage.bind(this)
-
 
   }
 
@@ -48,9 +54,11 @@ class App extends Component {
       default:
         throw new Error("Unknown Event Type");
     }
-
-
   }
+
+
+  
+  
 
   componentDidMount() {
     this.socket.onopen = function (event) {
@@ -72,17 +80,20 @@ class App extends Component {
     // const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
     // const messages = this.state.messages.concat(newMessage)
     // this.setState({messages: messages})
-    const newMessage = { type: "postMessage", username: this.state.currentUser.name, content: content }
+    const newMessage = { type: "postMessage", username: this.state.currentUser.name, content: content, color:this.state.currentUser.color }
     this.socket.send(JSON.stringify(newMessage))
 
   }
 
   onNewUsername(name) {
     //console.log("new username to be implemented")
-
+    // this.setState((prevState, props) => {
+    //   return {counter: prevState.counter + props.step};
+    // });
     
     let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name, content:`${this.state.currentUser.name} changed their name to ${name}` };
-    this.setState({ currentUser: { name: name }})
+    // this.setState({ currentUser: { name: name }})
+    this.setState(prevState=> ({currentUser:{name:name ,color: prevState.currentUser.color}}))
     this.socket.send(JSON.stringify(newName))
     // this.setState({currentUser: {name:name}})
     // const newUsername = {type:"postNotification", } 
