@@ -14,14 +14,12 @@ function getRandomColor() {
   return color;
 }
 
-
-
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      numOfConnectedUsers: 0, 
+      numOfConnectedUsers: 0,
       currentUser: { name: "Anonymous", color: getRandomColor() }, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
       ]
@@ -30,74 +28,45 @@ class App extends Component {
     this.onNewUsername = this.onNewUsername.bind(this)
     this.socket = new WebSocket(`ws://localhost:3001`)
     this.onMessage = this.onMessage.bind(this)
-
   }
 
   onMessage(event) {
-    //console.log("EVENT FROM SERVER TO USER:", event.data)
     const newMessage = JSON.parse(event.data)
     const messages = this.state.messages.concat(newMessage)
-    // console.log(messages);
     switch (newMessage.type) {
       case "incomingMessage":
         this.setState({ messages: messages })
-        //console.log("INCOMING MESSAGE FROM SERVER:", event.data)
         break;
       case "incomingNotification":
         this.setState({ messages: messages })
         console.log("CURRENT USER", this.state.currentUser)
         break;
-      case "incomingUserCount": 
-        this.setState({numOfConnectedUsers: newMessage.numOfConnectedUsers})
+      case "incomingUserCount":
+        this.setState({ numOfConnectedUsers: newMessage.numOfConnectedUsers })
         console.log("SET APP STATE USER COUNT:", this.state.numOfConnectedUsers)
-        break; 
+        break;
       default:
         throw new Error("Unknown Event Type");
     }
   }
 
-
-  
-  
-
   componentDidMount() {
     this.socket.onopen = function (event) {
       console.log("Connected to Server!")
-      //client.send("Here's some text that the server is urgently awai!"); 
     };
-    // this.socket.onmessage = (event) => {                                fixing the binding error using fat arrrow method 
-    //   // console.log(event.data)
-    //   const newMessage = JSON.parse(event.data)
-    //   const messages = this.state.messages.concat(newMessage)
-    //   this.setState({messages: messages}) 
-    // }
-    this.socket.onmessage = this.onMessage;            // Think: Why was it this.socket.onmessage = this.onMessage and NOT this.onMessage(); 
-
+    this.socket.onmessage = this.onMessage;
   }
 
 
   onNewMessage(content) {
-    // const newMessage = {id: ids.generate(), username: this.state.currentUser.name, content: content}
-    // const messages = this.state.messages.concat(newMessage)
-    // this.setState({messages: messages})
-    const newMessage = { type: "postMessage", username: this.state.currentUser.name, content: content, color:this.state.currentUser.color }
+    const newMessage = { type: "postMessage", username: this.state.currentUser.name, content: content, color: this.state.currentUser.color }
     this.socket.send(JSON.stringify(newMessage))
-
   }
 
   onNewUsername(name) {
-    //console.log("new username to be implemented")
-    // this.setState((prevState, props) => {
-    //   return {counter: prevState.counter + props.step};
-    // });
-    
-    let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name, content:`${this.state.currentUser.name} changed their name to ${name}` };
-    // this.setState({ currentUser: { name: name }})
-    this.setState(prevState=> ({currentUser:{name:name ,color: prevState.currentUser.color}}))
+    let newName = { type: "postNotification", oldUsername: this.state.currentUser.name, newUsername: name, content: `${this.state.currentUser.name} changed their name to ${name}` };
+    this.setState(prevState => ({ currentUser: { name: name, color: prevState.currentUser.color } }))
     this.socket.send(JSON.stringify(newName))
-    // this.setState({currentUser: {name:name}})
-    // const newUsername = {type:"postNotification", } 
-    // this.socket.send(JSON.stringify(newUsername))
   }
 
   render() {
